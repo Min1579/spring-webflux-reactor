@@ -4,12 +4,13 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Document
 public class Item {
     @Id
-    private final String id;
+    private String id;
     private String description;
     private Double price;
 
