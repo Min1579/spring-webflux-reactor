@@ -29,5 +29,6 @@ dependencies {
 }
 
 test {
+    exclude 'me/min/reactiveweb/fluxandmonoplayground/**'
     useJUnitPlatform()
 }
