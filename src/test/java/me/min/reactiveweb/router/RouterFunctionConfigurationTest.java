@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureWebTestClient
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RouterFunctionConfigurationTest {
 
     @Autowired
