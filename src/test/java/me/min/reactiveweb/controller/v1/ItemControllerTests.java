@@ -1,6 +1,5 @@
 package me.min.reactiveweb.controller.v1;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.min.reactiveweb.document.Item;
 import me.min.reactiveweb.payload.ItemDTO;
 import me.min.reactiveweb.payload.ItemUpdateDTO;
