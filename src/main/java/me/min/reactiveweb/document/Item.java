@@ -1,6 +1,8 @@
 package me.min.reactiveweb.document;
 
 import lombok.*;
+import me.min.reactiveweb.payload.ItemDTO;
+import me.min.reactiveweb.payload.ItemUpdateDTO;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,5 +21,11 @@ public class Item {
         this.id = id;
         this.description = description;
         this.price = price;
+    }
+
+    public Item update(ItemUpdateDTO payload) {
+        this.description = payload.getDescription();
+        this.price = payload.getPrice();
+        return this;
     }
 }
