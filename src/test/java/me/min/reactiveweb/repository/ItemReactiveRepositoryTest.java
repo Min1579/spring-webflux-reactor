@@ -142,7 +142,7 @@ class ItemReactiveRepositoryTest {
     void deleteItemById_testcase1() {
         String id = "ABC";
         itemReactiveRepository.deleteById(id)
-                .doOnNext(Void -> System.out.println("DELTED ITEM ID: " + id))
+                .doOnNext(Void -> System.out.println("DELETE ITEM ID: " + id))
                 .block();
 
         StepVerifier.create(itemReactiveRepository.findAll())
