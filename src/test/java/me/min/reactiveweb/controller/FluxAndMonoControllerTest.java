@@ -40,7 +40,8 @@ class FluxAndMonoControllerTest {
     @Test
     void testcase2_returnStreamFLux() {
 
-        Flux<Integer> responseBody = webClient.get()
+        Flux<Integer> responseBody = webClient
+                .get()
                 .uri("/api/flux")
                 .exchange()
                 .expectStatus()
@@ -74,7 +75,8 @@ class FluxAndMonoControllerTest {
         List<Integer> expected = List.of(1, 2, 3, 4);
 
         webClient
-                .get().uri("/api/flux")
+                .get()
+                .uri("/api/flux")
                 .exchange()
                 .expectStatus()
                 .isOk()
@@ -87,7 +89,9 @@ class FluxAndMonoControllerTest {
     @Test
     void testcase1_stream() {
 
-        Flux<Long> longStreamFlux = webClient.get().uri("/api/fluxStream")
+        Flux<Long> longStreamFlux = webClient
+                .get()
+                .uri("/api/fluxStream")
                 .exchange()
                 .expectStatus()
                 .isOk()
