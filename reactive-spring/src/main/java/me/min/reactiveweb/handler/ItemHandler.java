@@ -36,8 +36,7 @@ public class ItemHandler {
                         ServerResponse.ok()
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(fromValue(item))
-                )
-                .switchIfEmpty(ServerResponse.notFound().build());
+                ).switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> registerItem(ServerRequest serverRequest) {
@@ -53,33 +52,25 @@ public class ItemHandler {
 
 
     public Mono<ServerResponse> updateItem(ServerRequest serverRequest) {
-        String id = serverRequest.pathVariable("id");
+        final String id = serverRequest.pathVariable("id");
 
         return itemReactiveRepository.findById(id)
-                .flatMap(item -> serverRequest.bodyToMono(ItemUpdateDTO.class)
-                        .flatMap(payload -> {
-                            if (!payload.getId().equals(item.getId())) {
-                                return ServerResponse.badRequest().build();
-                            }
+            .flatMap(item -> serverRequest.bodyToMono(ItemUpdateDTO.class)
+                .flatMap(payload -> {
+                    if (!payload.getId().equals(item.getId()))
+                        return ServerResponse.badRequest().build();
 
-                            Mono<Item> updatedItem = itemReactiveRepository.save(item.update(payload));
+                        Mono<Item> updatedItem = itemReactiveRepository.save(item.update(payload));
 
-                            return ServerResponse
-                                    .ok()
-                                    .body(fromProducer(updatedItem, Item.class));
-                        })
-                )
-                .switchIfEmpty(ServerResponse.notFound().build());
+                        return ServerResponse.ok().body(fromProducer(updatedItem, Item.class));
+                })
+            ).switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> deleteItem(ServerRequest serverRequest) {
         String id = serverRequest.pathVariable("id");
         return itemReactiveRepository.findById(id)
-                .flatMap(item ->
-                        ServerResponse
-                                .ok()
-                                .body(itemReactiveRepository.deleteById(id), Void.class)
-                )
+                .flatMap(item -> ServerResponse.ok().body(itemReactiveRepository.deleteById(id), Void.class))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 }
