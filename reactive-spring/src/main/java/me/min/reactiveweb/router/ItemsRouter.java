@@ -16,23 +16,26 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class ItemsRouter {
     @Bean
     public RouterFunction<ServerResponse> itemsRoute(ItemHandler itemHandler) {
+
         return RouterFunctions
                 .route(GET(ITEMS_END_FUN_POINT_V1)
                         , itemHandler::getAllItems)
-
                 .andRoute(GET(ITEM_BY_ID_FUN_END_POINT_V1.concat("{id}"))
                         , itemHandler::getItemById)
-
                 .andRoute(POST(ITEM_REGISTER_FUN_END_POINT_V1)
                                 .and(accept(MediaType.APPLICATION_JSON))
                         , itemHandler::registerItem)
-
                 .andRoute(PUT(ITEM_UPDATE_FUN_END_POINT_V1.concat("{id}"))
                                 .and(accept(MediaType.APPLICATION_JSON))
                         , itemHandler::updateItem)
-
                 .andRoute(DELETE(ITEM_DELETE_FUN_END_POINT_V1.concat("{id}"))
                         , itemHandler::deleteItem);
+    }
 
+    @Bean
+    public RouterFunction<ServerResponse> errorRoute(ItemHandler itemHandler) {
+        return RouterFunctions
+                .route(GET("/fun/runtimeException").and(accept(MediaType.APPLICATION_JSON))
+                        , itemHandler::itemException);
     }
 }

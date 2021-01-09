@@ -73,4 +73,8 @@ public class ItemHandler {
                 .flatMap(item -> ServerResponse.ok().body(itemReactiveRepository.deleteById(id), Void.class))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
+
+    public Mono<ServerResponse> itemException(ServerRequest serverRequest) {
+        throw new RuntimeException("Runtime Exception!");
+    }
 }
