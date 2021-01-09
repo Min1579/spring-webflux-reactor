@@ -38,41 +38,29 @@ public class ItemController {
             consumes = "application/json")
     public Mono<ResponseEntity<Item>> registerItem(@RequestBody final ItemDTO payload) {
         return itemReactiveRepository.save(payload.toItemDocument())
-                .map(ResponseEntity.status(HttpStatus.CREATED)::body);
+                .map(ResponseEntity.status(HttpStatus.CREATED)::body)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-
-    // id and item to be updated in the req - path variable and request body
-    // using the id get the item from database
-    // updated the item retrieved with the value from the request body
-    // save the item
-    // return the saved items
     @PutMapping(value = ITEM_UPDATE_END_POINT_V1 + "{id}",
             produces = "application/json",
             consumes = "application/json")
     public Mono<ResponseEntity<Item>> updateItem(@PathVariable("id") final String id,
-                                                   @RequestBody final ItemUpdateDTO payload) {
-        log.info("DTO : {} ", payload);
-
-        if (!id.equals(payload.getId())) {
-            return Mono.just(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
-        }
-
+                                                 @RequestBody final ItemUpdateDTO payload) {
         return itemReactiveRepository.findById(id)
-                .flatMap(item -> itemReactiveRepository.save(item.update(payload)))
-                .map(updatedItem -> new ResponseEntity<>(updatedItem, HttpStatus.OK))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .flatMap(selectedItem -> itemReactiveRepository.save(payload.toItemDocument()))
+                .map(updatedItem -> ResponseEntity.ok(updatedItem))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
 
     @DeleteMapping(value = ITEM_DELETE_END_POINT_V1 + "{id}")
-    public Mono<ResponseEntity<Object>> deleteItem(@PathVariable("id") final String id) {
-        log.info("req id : {}", id);
+    public Mono<ResponseEntity<Void>> deleteItem(@PathVariable("id") final String id) {
+
         return itemReactiveRepository.findById(id)
-                .map(item -> {
-                    itemReactiveRepository.deleteById(item.getId());
-                    return new ResponseEntity<>(HttpStatus.OK);
-                })
+                .flatMap(selectedItem ->
+                        itemReactiveRepository.delete(selectedItem)
+                                .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK))))
                 .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
