@@ -1,9 +1,8 @@
-package me.min.reactiveweb.payload;
+package me.min.itemclient.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.min.reactiveweb.document.Item;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
@@ -18,12 +17,4 @@ public class ItemDTO {
         this.description = description;
         this.price = price;
     }
-
-    public Item toItemDocument() {
-        return Item.builder()
-                .description(description)
-                .price(price)
-                .build();
-    }
-
 }
