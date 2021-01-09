@@ -20,6 +20,14 @@ import static me.min.reactiveweb.constants.ItemConstants.*;
 public class ItemController {
     private final ItemReactiveRepository itemReactiveRepository;
 
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+//        log.error("Exception caught in handleRuntimeException : {]", ex);
+//        return ResponseEntity
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(ex.getMessage());
+//    }
+
     @GetMapping(value = ITEMS_END_POINT_V1, produces = "application/json")
     public Flux<Item> getAllItems() {
         return itemReactiveRepository.findAll();
@@ -31,6 +39,12 @@ public class ItemController {
         return itemReactiveRepository.findById(id)
                 .map(ResponseEntity.status(HttpStatus.OK)::body)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(ITEMS_END_POINT_V1 + "/runtimeException")
+    public Flux<Item> runtimeException() {
+        return itemReactiveRepository.findAll()
+                .concatWith(Mono.error(new RuntimeException("RuntimeException Occurred")));
     }
 
     @PostMapping(value = ITEM_REGISTER_END_POINT_V1,
