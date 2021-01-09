@@ -285,4 +285,15 @@ public class ItemControllerTests {
                 .expectNextCount(5)
                 .verifyComplete();
     }
+
+    @Test
+    void runtimeExceptionTest() {
+        webTestClient.get()
+                .uri(ITEMS_END_POINT_V1 + "/runtimeException")
+                .exchange()
+                .expectStatus()
+                .is5xxServerError()
+                .expectBody(String.class)
+                .isEqualTo("Runtime Exception from Controller Advice");
+    }
 }
