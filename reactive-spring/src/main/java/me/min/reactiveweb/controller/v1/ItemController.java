@@ -37,6 +37,7 @@ public class ItemController {
             produces = "application/json",
             consumes = "application/json")
     public Mono<ResponseEntity<Item>> registerItem(@RequestBody final ItemDTO payload) {
+
         return itemReactiveRepository.save(payload.toItemDocument())
                 .map(ResponseEntity.status(HttpStatus.CREATED)::body)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -45,12 +46,19 @@ public class ItemController {
     @PutMapping(value = ITEM_UPDATE_END_POINT_V1 + "{id}",
             produces = "application/json",
             consumes = "application/json")
-    public Mono<ResponseEntity<Item>> updateItem(@PathVariable("id") final String id,
+    public Mono<ResponseEntity<?>> updateItem(@PathVariable("id") final String id,
                                                  @RequestBody final ItemUpdateDTO payload) {
-        return itemReactiveRepository.findById(id)
-                .flatMap(selectedItem -> itemReactiveRepository.save(payload.toItemDocument()))
-                .map(updatedItem -> ResponseEntity.ok(updatedItem))
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+
+        return Mono.just(id.equals(payload.getId()))
+                .flatMap(valid -> {
+                    if (valid) {
+                        return itemReactiveRepository.findById(id)
+                                .flatMap(selectedItem -> itemReactiveRepository.save(selectedItem.update(payload)))
+                                .map(ResponseEntity::ok)
+                                .defaultIfEmpty(ResponseEntity.notFound().build());
+                    }
+                    return Mono.just(ResponseEntity.badRequest().body("request Id != payload Id"));
+                });
     }
 
 
