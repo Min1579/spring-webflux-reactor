@@ -55,6 +55,7 @@ public class ItemControllerTests {
                 .blockLast();
     }
 
+
     @Test
     void getAllItemsTest() {
         Flux<Item> items = webTestClient
@@ -212,7 +213,7 @@ public class ItemControllerTests {
         ItemUpdateDTO payload = new ItemUpdateDTO(givenId, "IMAC", 2200.00);
 
         webTestClient.put()
-                .uri(ITEM_UPDATE_END_POINT_V1.concat("{id}"), "ABC")
+                .uri(ITEM_UPDATE_END_POINT_V1.concat("{id}"), givenId)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(payload), ItemDTO.class)
                 .exchange()
@@ -263,6 +264,11 @@ public class ItemControllerTests {
                 .exchange()
                 .expectStatus()
                 .isOk();
+
+        StepVerifier.create(itemReactiveRepository.findAll().log())
+                .expectSubscription()
+                .expectNextCount(4)
+                .verifyComplete();
     }
 
     @Test
@@ -271,9 +277,12 @@ public class ItemControllerTests {
 
         webTestClient.delete()
                 .uri(ITEM_DELETE_END_POINT_V1.concat("{id}"), givenId)
-                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus()
                 .isNotFound();
+        StepVerifier.create(itemReactiveRepository.findAll().log())
+                .expectSubscription()
+                .expectNextCount(5)
+                .verifyComplete();
     }
 }
