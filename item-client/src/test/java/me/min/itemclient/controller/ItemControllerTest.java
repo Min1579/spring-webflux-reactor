@@ -24,7 +24,7 @@ class ItemControllerTest {
 
     @Disabled
     @Test
-    void getAllItemUsingRetrieveOrExchange() {
+    void getAllItemUsingRetrieveOrExchangeTest() {
         webClient.get()
                 .uri("/client/retrieve")
                 .exchange()
@@ -38,7 +38,7 @@ class ItemControllerTest {
 
     @Disabled
     @Test
-    void getSingleItemUsingRetrieve() {
+    void getSingleItemUsingRetrieveTest() {
         final String givenId = "ABC";
 
         webClient.get()
@@ -57,6 +57,19 @@ class ItemControllerTest {
                 .isEqualTo(149.99);
     }
 
+    @Disabled
+    @Test
+    void getSingleItemUsingRetrieveWhenIDNotFoundTest() {
+        final String givenId = "zzzzz";
+
+        webClient.get()
+                .uri("/client/retrieve/singleItem/".concat("{id}"),  givenId)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
+
+    @Disabled
     @Test
     void registerItem() {
         ItemDTO payload = new ItemDTO("IMAC", 2999.99);
@@ -91,10 +104,12 @@ class ItemControllerTest {
 
     }
 
+    @Disabled
     @Test
     void updateItem() {
     }
 
+    @Disabled
     @Test
     void deleteItem() {
     }
